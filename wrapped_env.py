@@ -1,4 +1,5 @@
-from AstroCraft.PettingZoo_MA.env.CaptureTheFlagMA import CTFENVMA
+from AstroCraft.PettingZoo_MA.env.CaptureTheFlagMA import CTFENVMA, MAX_FUEL
+from gymnasium import spaces
 
 import numpy as np
 
@@ -11,8 +12,8 @@ class CTFENVMA_sb3(CTFENVMA):
     def __init__(self, team_size, win_rew, flag_rew):
         super().__init__(team_size, win_rew, flag_rew)
         
-        self.obs_space = self.observation_space(0)
-        self.act_space = self.action_space(0)
+        self.action_space = spaces.MultiDiscrete(np.array([self._num_actions]*self._team_size, dtype=int))
+        self.observation_space = spaces.Box(low=-3, high=MAX_FUEL, shape=(self._team_size*2+2, 9))
         
     def reset(self, seed=None, options=None):
         """
