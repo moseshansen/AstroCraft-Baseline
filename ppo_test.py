@@ -14,4 +14,4 @@ env = ActionMasker(env, "action_mask")
 
 # Initialize maskable PPO model
 model = MaskablePPO(MaskableActorCriticPolicy, env, seed=42, verbose=1)
-model.learn(progress_bar=True)
+model.learn(total_timesteps=1e9, callback=MaskableEvalCallback, progress_bar=True)
