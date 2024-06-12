@@ -6,11 +6,11 @@ A Wrapper for the base astrocraft multi-agent game that will initialize the game
 -only allow game to last a few turns at most
 """
 
-from AstroCraft.PettingZoo_MA.env.CaptureTheFlagMA import CTFENVMA
+from env.CaptureTheFlagMA import CTFENVMA
 
-from AstroCraft.PettingZoo_MA.env.moving_object import MovingObject
-from AstroCraft.PettingZoo_MA.env.mobile_agent import MobileAgent
-from AstroCraft.PettingZoo_MA.env.util import MAX_FUEL, MIN_FUEL_DICT, PTMAX
+from env.moving_object import MovingObject
+from env.mobile_agent import MobileAgent
+from env.util import MAX_FUEL, MIN_FUEL_DICT, PTMAX
 import numpy as np
 import random
 

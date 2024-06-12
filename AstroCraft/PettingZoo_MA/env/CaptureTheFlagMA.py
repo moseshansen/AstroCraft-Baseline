@@ -441,11 +441,11 @@ class CTFENVMA(ParallelEnv):
 
     @lru_cache(maxsize=None)
     def observation_space(self, agent):
-        return spaces.Box(low=-3, high=MAX_FUEL, shape=(2*(self._team_size+1), 8))
+        return spaces.Box(low=-3, high=MAX_FUEL, shape=(2*(self._team_size+1), 9))
 
     @lru_cache(maxsize=None)
     def action_space(self, agent):
-        return spaces.MultiDiscrete(np.array([self._num_actions]*self._team_size, dtype=np.int))
+        return spaces.MultiDiscrete(np.array([self._num_actions]*self._team_size, dtype=int))
     
     def valid_action_masks(self):
         """Generates a mask for the action space for each player"""
