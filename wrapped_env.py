@@ -1,6 +1,7 @@
 from AstroCraft.PettingZoo_MA.env.CaptureTheFlagMA import CTFENVMA, MAX_FUEL
-from gymnasium import spaces
+from scripted_agents.dormant_agent import DormantOpponent
 
+from gymnasium import spaces
 import numpy as np
 
 class CTFENVMA_sb3(CTFENVMA):
@@ -14,6 +15,7 @@ class CTFENVMA_sb3(CTFENVMA):
         
         self.action_space = spaces.MultiDiscrete(np.array([self._num_actions]*self._team_size, dtype=int))
         self.observation_space = spaces.Box(low=-3, high=MAX_FUEL, shape=(self._team_size*2+2, 9))
+        self.opponent = DormantOpponent(team_size)
         
     def reset(self, seed=None, options=None):
         """
@@ -21,6 +23,7 @@ class CTFENVMA_sb3(CTFENVMA):
         and info for player 0, for use with sb3
         """
         obs, info = super().reset(seed, options)
+        self.obs = obs
         
         return obs['player0']['observation'], info['player0']
     
@@ -32,10 +35,11 @@ class CTFENVMA_sb3(CTFENVMA):
         """
         joint_action = {
             'player0': action,
-            'player1': np.zeros_like(action)
+            'player1': self.opponent.select_action(self.obs['player1'],1,1,1,1)
         }
         
         obs, rew, term, trunc, info = super().step(joint_action)
+        self.obs = obs
         return obs['player0']['observation'], rew['player0'], term['player0'], trunc['player0'], info['player0']
         
     def action_mask(self):
