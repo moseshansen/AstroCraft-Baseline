@@ -14,7 +14,7 @@ class CTFMonitor(Monitor):
             self.results_writer = ResultsWriter(
                 filename,
                 header={"t_start": self.t_start, "env_id": str(env_id)},
-                extra_keys=('c', 'f', 'p'),
+                extra_keys=('c', 'f', 'p', 'a'),
                 override_existing=override_existing,
             )
 
@@ -33,9 +33,11 @@ class CTFMonitor(Monitor):
         self.episode_proximities: List[float] = []
         self.episode_captures: List[bool] = []
         self.proximities: List[float] = []
+        self.action_freqs: List[int] = [0]*14
         
     def reset(self, **kwargs) -> Tuple[Any | Dict[str, Any]]:
         self.proximities: List[float] = []
+        self.action_freqs: List[int] = [0]*14
         return super().reset(**kwargs)
     
     def step(self, action: Any) -> Tuple[Any | SupportsFloat | bool | Dict[str, Any]]:
@@ -45,11 +47,13 @@ class CTFMonitor(Monitor):
         observation, reward, terminated, truncated, info = self.env.step(action)
         self.rewards.append(float(reward))
         self.proximities.append(abs(observation[1,-1].item()-observation[2,-1].item()))
+        for act in action:
+            self.action_freqs[act] += 1
         if terminated or truncated:
             self.needs_reset = True
             ep_rew = sum(self.rewards)
             ep_len = len(self.rewards)
-            ep_info = {"r": round(ep_rew, 6), "l": ep_len, "t": round(time.time() - self.t_start, 6), "f": round(observation[1,3].item(), 6), "p": round(min(self.proximities), 6), "c": int(observation[1,4].item())}
+            ep_info = {"r": round(ep_rew, 6), "l": ep_len, "t": round(time.time() - self.t_start, 6), "f": round(observation[1,3].item(), 6), "p": round(min(self.proximities), 6), "c": int(observation[1,4].item()), "a": "".join([str(x)+"_" for x in self.action_freqs])}
             for key in self.info_keywords:
                 ep_info[key] = info[key]
             self.episode_returns.append(ep_rew)

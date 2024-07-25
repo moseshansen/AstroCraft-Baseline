@@ -15,8 +15,9 @@ def get_mask(env):
 
 env = ActionMasker(env, get_mask)
 env = CTFMonitor(env, "./logs")
+test_env = CTFMonitor(env, "./val_logs")
 
 # Initialize maskable PPO model
 model = MaskablePPO(MaskableActorCriticPolicy, env, seed=42, verbose=1)
-eval_callback = MaskableEvalCallback(env, n_eval_episodes=10, eval_freq=5_000, log_path="./ppo_evaluations", use_masking=True) # Note: you will need to create a folder for the evaluations to be logged in
+eval_callback = MaskableEvalCallback(test_env, n_eval_episodes=10, eval_freq=5_000, log_path="./ppo_evaluations", use_masking=True) # Note: you will need to create a folder for the evaluations to be logged in
 model.learn(total_timesteps=250_000, callback=eval_callback, progress_bar=True)
