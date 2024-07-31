@@ -1,0 +1,20 @@
+#this function is added into Capture the Flag MA. py 
+
+    def find_who_ran_out(self,agent):
+        if agent == "player0":
+            agent = self._player0
+            opponent = self._player1
+        else:
+            agent = self._player1
+            opponent = self._player0
+        for i in range(self._team_size):
+            if agent[i+1]._returned_flag:
+                print("returned flag")
+                return 1
+        if all([x._fuel <= MIN_FUEL_DICT[x._orbital] or not x._alive and not x._transferring for x in agent]):
+            #print("agent ran out of ful ")
+            return 0 #ran out of fuel
+        
+        if all([x._fuel <= MIN_FUEL_DICT[x._orbital] or not x._alive and not x._transferring for x in opponent]):
+            #print("opponent ran out of fuel ")
+            return 0 
