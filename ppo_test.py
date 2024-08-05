@@ -4,18 +4,18 @@ from sb3_contrib.common.wrappers import ActionMasker
 from sb3_contrib.common.maskable.callbacks import MaskableEvalCallback
 from sb3_contrib.common.maskable.evaluation import evaluate_policy
 
-from wrapped_env import CTFENVMA_sb3
+from shaped_env import CTFENVMA_sb3
 from monitor import CTFMonitor
 
 # Initialize environment with 1 mobile per team, and reward of 1 for winning
-env = CTFENVMA_sb3(1,1,0)
+env = CTFENVMA_sb3(1,1,.5)
 
 def get_mask(env):
     return env.action_mask()
 
 env = ActionMasker(env, get_mask)
-env = CTFMonitor(env, "./logs")
-test_env = CTFMonitor(env, "./val_logs")
+env = CTFMonitor(env, "./logstest")
+test_env = CTFMonitor(env, "./logstestv")
 
 # Initialize maskable PPO model
 model = MaskablePPO(MaskableActorCriticPolicy, env, seed=42, verbose=1)
